@@ -11,9 +11,9 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
     if(b * b - 4 * a * c == 0) {
         t = (-1 * b) / (2 * a);
     }
-    else if(b * b - 4 * a * c > 0) {
-        int t_positive = ((-1 * b) + (b * b - 4 * a * c)) / (2 * a);
-        int t_negative = ((-1 * b) - (b * b - 4 * a * c)) / (2 * a);
+    else if((b * b - 4 * a * c) > 0) {
+        double t_positive = ((-1 * b) + (b * b - 4 * a * c)) / (2 * a);
+        double t_negative = ((-1 * b) - (b * b - 4 * a * c)) / (2 * a);
         if(t_positive >= t_negative) { t = t_positive; }
 	else { t = t_negative; }
     }
