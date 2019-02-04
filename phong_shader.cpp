@@ -8,34 +8,34 @@ vec3 Phong_Shader::
 Shade_Surface(const Ray& ray,const vec3& intersection_point,
     const vec3& normal,int recursion_depth) const
 {
-    vec3 color, view, reflection;
-    Light *cur_light;
-    Ray shadow_ray;
-    Hit intersection{};
-    vec3 shadow_ray_vec, ray_vec;
+    vec3 color;
+    vec3 intensity_ambient = color_ambient * world.ambient_color * world.ambient_intensity;
+    vec3 intensity_diffuse;
+    vec3 intensity_specular;
 
-    color = color_ambient * world.ambient_color * world.ambient_intensity;
+    vec3 l;
+    Light *cur_light;
 
     for(unsigned int i = 0; i < (world.lights).size(); ++i) {
-        cur_light = world.lights[i];
-
-        shadow_ray.endpoint = intersection_point;
-        shadow_ray.direction = (cur_light->position - intersection_point).normalized();
+        cur_light = world.lights.at(i);
 	
-        shadow_ray_vec = cur_light->position - intersection_point; 
+        //shadow_ray = cur_light->position - intersection_point;
+        //shadow_ray_vec = cur_light->position - intersection_point; 
+	//intersection = world.Closest_Intersection(shadow_ray);
 
-	intersection = world.Closest_Intersection(shadow_ray);
+        //if(intersection.object || intersection.dist <= shadow_ray_vec.magnitude() ) { //equal
+            intensity_diffuse += color_diffuse * cur_light->Emitted_Light(intersection_point - cur_light->position) * std::max(dot(normal.normalized(),-(intersection_point - (cur_light->position)).normalized()),0.0);
+            
+            //view = ray.endpoint - intersection_point;
+            //ray_vec = intersection_point - cur_light->position; 
+            //reflection = ray_vec.normalized() - 2 * dot(ray_vec.normalized(),normal) * normal;
+            l = cur_light->position - intersection_point;
 
-        if(intersection.object || intersection.dist <= shadow_ray_vec.magnitude() ) { //equal
-            color += color_diffuse * cur_light->Emitted_Light(shadow_ray_vec) * std::max(dot(normal,shadow_ray.direction),0.0);
-            
-            view = ray.endpoint - intersection_point;
-            ray_vec = intersection_point - cur_light->position; 
-            reflection = ray_vec.normalized() - 2 * dot(ray_vec.normalized(),normal) * normal;
-            
-            color += color_specular * cur_light->Emitted_Light(shadow_ray_vec) * pow(std::max(dot(view.normalized(),reflection),0.0),2);
-        }
+            intensity_specular += color_specular * cur_light->Emitted_Light(intersection_point - cur_light->position) * pow(std::max(dot((intersection_point - ray.endpoint).normalized(),(l - 2 * dot(l,normal)*normal).normalized()),0.0),specular_power);
+        //}
     }
     
+    color = intensity_ambient + intensity_diffuse + intensity_specular;
     return color;
+
 }
