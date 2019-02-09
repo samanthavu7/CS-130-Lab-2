@@ -16,5 +16,6 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
         Ray reflected_ray(intersection_point, (2 * dot(view_ray,normal) * normal - view_ray).normalized());
 	color = (1 - reflectivity) * color + reflectivity * world.Cast_Ray(reflected_ray,recursion_depth+1);
     }
+    //if(debug_pixel) { std::cout << "reflective color: " << color << std::endl; }
     return color;
 }

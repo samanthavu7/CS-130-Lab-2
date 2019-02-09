@@ -59,6 +59,7 @@ void Render_World::Render()
 // or the background color if there is no object intersection
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
+    if(debug_pixel) { std::cout << "cast ray: end = " << ray.endpoint << "; dir = " << ray.direction <<std::endl; }
     vec3 color;
     Hit closest_hit = Closest_Intersection(ray);
     if(closest_hit.object != NULL) {

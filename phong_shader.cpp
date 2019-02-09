@@ -37,6 +37,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     }
     
     color = intensity_ambient + intensity_diffuse + intensity_specular;
+    if(debug_pixel) { std::cout << "shading for light 0: ambient = " << intensity_ambient << "diffuse = " << intensity_diffuse << "; specular = " << intensity_specular << std::endl << "final color: " << color << std::endl; }
     return color;
 
 }
