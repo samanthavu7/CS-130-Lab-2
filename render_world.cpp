@@ -52,7 +52,7 @@ void Render_World::Render()
 
     for(int j=0;j<camera.number_pixels[1];j++)
         for(int i=0;i<camera.number_pixels[0];i++)
-            Render_Pixel(ivec2(i,j));
+	    Render_Pixel(ivec2(i,j));
 }
 
 // cast ray and return the color of the closest intersected surface point,

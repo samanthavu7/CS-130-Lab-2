@@ -28,7 +28,8 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
   
         intersection = world.Closest_Intersection(shadow_ray_ray);
 
-        if(!intersection.object || intersection.dist >= shadow_ray.magnitude() ) { //equal
+        if(!world.enable_shadows || (world.enable_shadows && (!intersection.object || intersection.dist >= shadow_ray.magnitude()))) {
+
             intensity_diffuse += color_diffuse * cur_light->Emitted_Light(shadow_ray) * std::max(dot(normal,shadow_ray.normalized()),0.0);
             
             intensity_specular += color_specular * cur_light->Emitted_Light(shadow_ray) * pow(std::max(dot(view_ray.normalized(),reflected_ray.normalized()),0.0), specular_power);
