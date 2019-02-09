@@ -12,7 +12,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     vec3 intensity_ambient = color_ambient * world.ambient_color * world.ambient_intensity;
     vec3 intensity_diffuse, intensity_specular;
 
-    vec3 shadow_ray, ray_vec, reflected_ray;
+    vec3 shadow_ray, view_ray, reflected_ray;
     Ray shadow_ray_ray;
     Light *cur_light;
     Hit intersection{};
@@ -23,15 +23,15 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
         shadow_ray = cur_light->position - intersection_point; 
 	shadow_ray_ray.endpoint = intersection_point;
         shadow_ray_ray.direction = (cur_light->position - intersection_point).normalized();
-        ray_vec = intersection_point - ray.endpoint;
-        reflected_ray = shadow_ray - 2 * dot(shadow_ray, normal) * normal;
+        view_ray = ray.endpoint - intersection_point;
+        reflected_ray = 2 * dot(shadow_ray, normal) * normal - shadow_ray;
   
         intersection = world.Closest_Intersection(shadow_ray_ray);
 
-        if(!intersection.object || intersection.dist > shadow_ray.magnitude() ) { //equal
+        if(!intersection.object || intersection.dist >= shadow_ray.magnitude() ) { //equal
             intensity_diffuse += color_diffuse * cur_light->Emitted_Light(shadow_ray) * std::max(dot(normal,shadow_ray.normalized()),0.0);
             
-            intensity_specular += color_specular * cur_light->Emitted_Light(shadow_ray) * pow(std::max(dot(ray_vec.normalized(),reflected_ray.normalized()),0.0), specular_power);
+            intensity_specular += color_specular * cur_light->Emitted_Light(shadow_ray) * pow(std::max(dot(view_ray.normalized(),reflected_ray.normalized()),0.0), specular_power);
         }
     }
     

@@ -7,6 +7,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     const vec3& normal,int recursion_depth) const
 {
     vec3 color;
-    TODO; // determine the color
-    return color;
+    //color = shader->Shade_Surface(ray,intersection_point,normal,recursion_depth);
+    //Ray reflected_ray(intersection_point,);
+    return color; //= (1 - reflectivity) * color + reflectivity * Cast_Ray(reflected_ray,recursion_depth);
 }
