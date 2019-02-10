@@ -8,7 +8,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 {
     vec3 color;
 
-    if(recursion_depth > world.recursion_depth_limit) {
+    if(recursion_depth >= world.recursion_depth_limit) {
 	color = vec3(0,0,0);
     }
     else {
