@@ -45,7 +45,7 @@ void Mesh::Read_Obj(const char* file)
 Hit Mesh::Intersection(const Ray& ray, int part) const
 {
     double distance;
-
+    
     if(part >= 0) {
         if(Intersect_Triangle(ray,part,distance)) { return {this,distance,part}; }
     }
@@ -59,7 +59,7 @@ Hit Mesh::Intersection(const Ray& ray, int part) const
 
 // Compute the normal direction for the triangle with index part.
 vec3 Mesh::Normal(const vec3& point, int part) const
-{
+{    
     assert(part>=0);
     vec3 vertex1 = vertices.at(triangles[part][0]);
     vec3 vertex2 = vertices.at(triangles[part][1]);
@@ -87,7 +87,7 @@ bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
 
     Plane triangle_plane(vertex1, Normal(vertex1,tri));
     Hit triangle_intersection = triangle_plane.Intersection(ray,tri);
-    if(!triangle_intersection.object) { return false; }
+    if(!triangle_intersection.object || triangle_intersection.dist <= small_t) { return false; }
     
     vec3 p = ray.Point(triangle_intersection.dist);
     vec3 v = vertex2 - vertex1;
@@ -97,11 +97,10 @@ bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
 
     double beta = dot(cross(w,u), y) / dot(cross(w,u), v);
     double gamma = dot(cross(u,v), y) / dot(cross(u,v), w);
-    double s = - dot(cross(v,w), y) / dot(cross(v,w), u);
     double alpha = 1 - beta - gamma;
-
-    if(s > small_t && alpha >= -weight_tolerance && beta >= -weight_tolerance && gamma >= -weight_tolerance) {
-    	dist = triangle_intersection.dist;
+    
+    if(alpha >= -weight_tolerance && beta >= -weight_tolerance && gamma >= -weight_tolerance) {
+        dist = triangle_intersection.dist;
     	return true;
     }
     
